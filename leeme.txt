@@ -1,0 +1,29 @@
+Hola!
+
+Para Hacer funcionar el ejercicio debes:
+
+1.- Crear una base de datos MariaDB-MYSQL usando el archivo
+    *votaciones.sql*
+
+
+2.- Editar los datos de acceso a la base de datos en el archivo
+    *configuracion.php*.
+
+
+    Pon atencion con el puerto que esta en el host, mysql y Maria DB
+    usan puertos distintos a veces, esta vez esta configurado en 3307
+    fijate si debes cambiarlo o no.
+
+
+    Fue probado con:
+
+
+    PHP Version 7.4.26
+    Chrome  114.0.5735.201
+    MariaDB 10.6.5-MariaDB
+    Windows 10
+
+
+
+
+    Gracias por tu tiempo.

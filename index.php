@@ -643,7 +643,7 @@ footer {
 
 
 
-                                <form action="#" method="post" class="animate__animated animate__backInUp" style="animation-delay:1.1s;">
+                                <form action="#" method="post" class="animate__animated animate__backInUp" style="animation-delay:1.1s;" id="FormVotacion">
                                     <fieldset>
                                         <legend>Datos Personales</legend>
 
@@ -651,8 +651,8 @@ footer {
 
                                             <div class="c100">
                                                 <label for="nombre">Nombre Completo:</label>
-                                                <input type="text" id="nombre_completo" name="nombre_completo" required>
-                                                <span class="error" id="error-nombre_completo">Debe escrirbir el nombre completo</span>
+                                                <input type="text" id="nombre_completo" name="nombre_completo" >
+                                                <span class="error" id="error-nombre_completo"></span>
                                             </div>
 
                                         </div>
@@ -662,19 +662,19 @@ footer {
 
                                             <div class="c50">
                                                 <label for="alias">Alias:</label>
-                                                <input type="text" id="alias" name="alias" required>
+                                                <input type="text" id="alias" name="alias" >
                                                 <span class="error" id="error-alias"></span>
                                             </div>
                                             <div class="c50">
                                                 <label for="rut">Rut:</label>
-                                                <input type="text" id="rut" name="rut" required>
+                                                <input type="text" id="rut" name="rut" >
                                                 <span class="error" id="error-rut"></span>
                                             </div>
 
                                         </div>
 
                                         <label for="email">Email:</label>
-                                        <input type="email" id="email" name="email" required>
+                                        <input type="email" id="email" name="email" >
                                         <span class="error" id="error-email"></span>
                                     </fieldset>
                                     <br>
@@ -682,14 +682,14 @@ footer {
                                     <fieldset>
                                         <legend>Ubicación</legend>
                                         <label for="id_region">Región:</label>
-                                        <select id="id_region" name="id_region" required>
+                                        <select id="id_region" name="id_region" >
                                             <option value="" disabled selected>Seleccione una región</option>
                                         </select>
                                         <span class="error" id="error-id_region"></span>
                                         <br>
 
                                         <label for="id_region">Comuna:</label>
-                                        <select id="id_comuna" name="id_comuna" required="">
+                                        <select id="id_comuna" name="id_comuna">
                                             <option value="" disabled="" selected="">Seleccione una comuna</option>
                                         </select>
 
@@ -700,10 +700,10 @@ footer {
                                     <fieldset>
                                         <legend>Elección de Candidato</legend>
                                         <label for="id_candidato">Candidato:</label>
-                                        <select id="id_candidato" name="id_candidato" required="">
+                                        <select id="id_candidato" name="id_candidato">
                                             <option value="" disabled="" selected="">Seleccione un Candidato</option>
                                         </select>
-                                        <span class="error" id="error-candidato"></span>
+                                        <span class="error" id="error-id_candidato"></span>
                                     </fieldset>
                                     <br>
 
@@ -713,21 +713,21 @@ footer {
                                         <div class="row">
 
                                         <div class="c25">
-                                            <label for="web">Web <br/><input type="radio" id="web" name="como_se_entero" value="web" required></label>
+                                            <label for="web">Web <br/><input type="checkbox" id="web" name="como_se_entero" value="1"></label>
                                         </div>
                                         <div class="c25">
                                             
-                                            <label for="tv">TV <br/> <input type="radio" id="tv" name="como_se_entero" value="tv" required></label>
-                                        </div>
-                                        <div class="c25">
-
-                                            
-                                            <label for="redes_sociales">Redes Sociales <br/><input type="radio" id="redes_sociales" name="como_se_entero" value="redes_sociales" required></label>
+                                            <label for="tv">TV <br/> <input type="checkbox" id="tv" name="como_se_entero" value="2"></label>
                                         </div>
                                         <div class="c25">
 
                                             
-                                            <label for="amigo">Amigo <br/><input type="radio" id="amigo" name="como_se_entero" value="amigo" required></label>
+                                            <label for="redes_sociales">Redes Sociales <br/><input type="checkbox" id="redes_sociales" name="como_se_entero" value="3"></label>
+                                        </div>
+                                        <div class="c25">
+
+                                            
+                                            <label for="amigo">Amigo <br/><input type="checkbox" id="amigo" name="como_se_entero" value="4"></label>
                                         </div>
                                        
 
@@ -884,7 +884,235 @@ this.jsonUbicaciones.forEach((ubicacion) => {
     console.log('Comunas cargadas y ordenadas alfabéticamente.');
   }
 
+
+  validarNombreCompleto() {
+
+    //
+
+  const nombreCompletoInput = document.getElementById('nombre_completo');
+  const ErrorNombreCompleto = document.getElementById('error-nombre_completo');
+  
+  if (!nombreCompletoInput) {
+    console.error('El campo "nombre_completo" no está disponible.');
+    return false;
+  }
+
+  const nombreCompleto = nombreCompletoInput.value.trim();
+
+  if (nombreCompleto === '') {
+    // El campo está vacío
+    ErrorNombreCompleto.innerHTML = "Debe escrirbir el nombre completo";
+    return false;
+  } else {
+    // El campo no está vacío
+    ErrorNombreCompleto.innerHTML = "";
+    return true;
+  }
+
+}
+
+
+ validarAlias() {
+  const aliasInput = document.getElementById('alias');
+  const mensajeErrorAlias = document.getElementById('error-alias');
+
+  if (!aliasInput) {
+    console.error('El campo "alias" no está disponible.');
+    return false;
+  }
+
+  const alias = aliasInput.value.trim();
+
+  // Expresión regular para verificar si el alias tiene al menos 6 caracteres y contiene letras y números
+  const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+
+  if (!regex.test(alias)) {
+    // El alias no cumple con los requisitos, mostrar mensaje de error
+    mensajeErrorAlias.innerHTML = 'El alias debe tener al menos 6 caracteres y contener letras y números.';
+    return false;
+  } else {
+    // El alias cumple con los requisitos, borrar mensaje de error si existe
+    mensajeErrorAlias.innerHTML = '';
+    return true;
+  }
+}
+
+
+ 
+
+validaRut(rutCompleto) {
+        if (!/^[0-9]+-[0-9kK]{1}$/.test(rutCompleto))
+            return false;
+        var tmp = rutCompleto.split('-');
+        var digv = tmp[1];
+        var rut = tmp[0];
+        if (digv == 'K') digv = 'k';
+        return this.dv(rut) == digv;
+}
+
+    // Cálculo del dígito verificador para el RUT chileno
+dv(T) {
+        var M = 0,
+            S = 1;
+        for (; T; T = Math.floor(T / 10))
+            S = (S + T % 10 * (9 - M++ % 6)) % 11;
+        return S ? S - 1 : 'k';
+}
+
+
+
+    // Función para validar el RUT en el elemento con id "rut"
+    validarRutInput() {
+        const rutInput = document.getElementById('rut');
+        const errorRut = document.getElementById('error-rut');
+
+        if (!rutInput) {
+            console.error('El campo "rut" no está disponible.');
+            return false;
+        }
+
+        let rut = rutInput.value.trim();
+        rut = rut.replace(/\./g, ''); // Eliminar puntos del rut
+
+        // Verificar si el rut es válido utilizando la función validaRut() de la clase Validador
+        if (!this.validaRut(rut)) {
+            errorRut.innerHTML = 'El RUT ingresado no es válido.';
+            return false;
+        }
+
+        // El rut es válido
+        errorRut.innerHTML = '';
+        return true;
+    }
+
+
+
+    validarEmail() {
+    const emailInput = document.getElementById('email');
+    const errorEmail = document.getElementById('error-email');
+
+    if (!emailInput) {
+        console.error('El campo "email" no está disponible.');
+        return false;
+    }
+
+    const email = emailInput.value.trim();
+
+    // Expresión regular para validar el formato del correo electrónico
+    var regex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+  
+  if (!regex.test(email)) {
+        errorEmail.innerHTML = 'El correo electrónico ingresado no es válido.';
+        return false;
+    }
+
+    // El email es válido
+    errorEmail.innerHTML = '';
+    return true;
+}
+
+
+
+ validarRegion() {
+    const regionSelect = document.getElementById('id_region');
+    const errorRegion = document.getElementById('error-id_region');
+
+    if (!regionSelect) {
+        console.error('El campo "id_region" no está disponible.');
+        return false;
+    }
+
+    const selectedValue = regionSelect.value;
+
+    // Verificar si se ha seleccionado una opción válida
+    if (selectedValue === '') {
+        errorRegion.innerHTML = 'Debe seleccionar una región.';
+        return false;
+    }
+
+    // La región es válida
+    errorRegion.innerHTML = '';
+    return true;
+}
+
+
+validarComuna() {
+    const comunaSelect = document.getElementById('id_comuna');
+    const errorComuna = document.getElementById('error-id_comuna');
+
+    if (!comunaSelect) {
+        console.error('El campo "id_comuna" no está disponible.');
+        return false;
+    }
+
+    const selectedComunaValue = comunaSelect.value;
+
+    // Verificar si se ha seleccionado una comuna válida
+    if (selectedComunaValue === '') {
+        errorComuna.innerHTML = 'Debe seleccionar una comuna.';
+        return false;
+    }
+
+    // La comuna es válida
+    errorComuna.innerHTML = '';
+    return true;
+}
+
+
+
+validarCandidato() {
+    const candidatoSelect = document.getElementById('id_candidato');
+    const errorCandidato = document.getElementById('error-id_candidato');
+
+    if (!candidatoSelect) {
+        console.error('El campo "id_candidato" no está disponible.');
+        return false;
+    }
+
+    const selectedCandidatoValue = candidatoSelect.value;
+
+    // Verificar si se ha seleccionado un candidato válido
+    if (selectedCandidatoValue === '') {
+        errorCandidato.innerHTML = 'Debe seleccionar un candidato.';
+        return false;
+    }
+
+    // El candidato es válido
+    errorCandidato.innerHTML = '';
+    return true;
+}
+
+
+
+
+validarComoSeEntero() {
+    const comoSeEnteroCheckboxes = document.querySelectorAll('input[name="como_se_entero"]');
+    const errorComoSeEntero = document.getElementById('error-como_se_entero');
+    
+    if (!comoSeEnteroCheckboxes.length) {
+        console.error('Los checkboxes "como_se_entero" no están disponibles.');
+        return false;
+    }
+    
+    const selectedCount = Array.from(comoSeEnteroCheckboxes).filter(checkbox => checkbox.checked).length;
+    
+    // Verificar si se han seleccionado al menos dos elementos
+    if (selectedCount < 2) {
+        errorComoSeEntero.innerHTML = 'Debe seleccionar al menos dos opciones.';
+        return false;
+    }
+    
+    // Los elementos seleccionados son válidos
+    errorComoSeEntero.innerHTML = '';
+    return true;
+}
+
+
   listener() {
+
+     
+    /*****************************************************************    
+    Primer listener es para detectar cuando se selecciona una region */
     const selectRegion = document.getElementById('id_region');
 
     if (!selectRegion) {
@@ -898,6 +1126,115 @@ this.jsonUbicaciones.forEach((ubicacion) => {
     });
 
     console.log('Listener para el elemento "id_region" configurado.');
+
+    /* Segundo listener es para detectar cuando se  Envia Form */
+
+    const formVotacion = document.getElementById('FormVotacion');
+
+    if (!formVotacion) {
+    console.error('El formulario de votación no está disponible.');
+    } else {
+    formVotacion.addEventListener('submit', (event) => {
+        event.preventDefault(); // Esto evita que el formulario se envíe automáticamente.
+
+        // Aquí puedes realizar las acciones que necesites al enviar el formulario.
+        // Por ejemplo, puedes obtener los valores de los campos del formulario y enviarlos a través de una solicitud AJAX.
+
+        console.log('Formulario click enviar Realizar acciones necesarias aquí para validar.');
+        // ... Código para enviar los datos del formulario ...
+
+        // Inicializar el contador de errores
+        let errores_validacion = 0;
+
+        // Llamar a los métodos y aumentar el contador de errores si el resultado es false
+
+        if (!this.validarNombreCompleto()) {
+            errores_validacion++;
+        }
+
+        if (!this.validarAlias()) {
+            errores_validacion++;
+        }
+
+        if (!this.validarRutInput()) {
+            errores_validacion++;
+        }
+
+        if (!this.validarEmail()) {
+            errores_validacion++;
+        }
+
+        if (!this.validarRegion()) {
+            errores_validacion++;
+        }
+
+        if (!this.validarComuna()) {
+            errores_validacion++;
+        }
+
+        if (!this.validarCandidato()) {
+            errores_validacion++;
+        }
+
+        if (!this.validarComoSeEntero()) {
+            errores_validacion++;
+        }
+
+
+        if(errores_validacion>0){
+            alert('Tiene errores que arreglar en formulario');
+        }else{
+            alert(' formulario se envia');           
+        }
+
+
+        // O puedes simplemente enviar el formulario de manera convencional usando:
+        // formVotacion.submit();
+    });
+
+    console.log('Listener para el evento "onsubmit" del formulario "FormVotacion" configurado.');
+    }
+
+    /* Listener para evitar que en alias se ingresen caracteres no deseados
+        los caracteres no permitidos los elimina de forma automatica no importa si es keypress o keyup
+    */
+
+    /* Segundo listener es para detectar cuando se  Envia Form */
+
+    const aliasInput = document.getElementById('alias');
+
+    aliasInput.addEventListener('keydown', function(event) {
+        const key = event.key;
+        const regex = /^[a-zA-Z0-9]$/;
+
+        if (!regex.test(key) && key !== 'Backspace') {
+            event.preventDefault();
+        }
+    });
+
+    aliasInput.addEventListener('paste', function(event) {
+        const pastedText = event.clipboardData.getData('text');
+
+        // Eliminar caracteres no permitidos del texto pegado usando una expresión regular
+        const regex = /[^a-zA-Z0-9]/g;
+        const nuevoTexto = pastedText.replace(regex, '');
+
+        // Colocar el texto modificado en el campo "alias"
+        setTimeout(function() {
+            aliasInput.value = nuevoTexto;
+        }, 0);
+
+        // Evitar que el evento de pegar continúe propagándose
+        event.preventDefault();
+    });
+
+
+
+
+/* Listener para quitar caracteres no permitidos en email */
+
+
+   
   }
 
 
