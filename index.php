@@ -713,21 +713,21 @@ footer {
                                         <div class="row">
 
                                         <div class="c25">
-                                            <label for="web">Web <br/><input type="checkbox" id="web" name="como_se_entero" value="1"></label>
+                                            <label for="web">Web <br/><input type="checkbox" id="web" name="como_se_entero[]" class="como_se_entero" value="1"></label>
                                         </div>
                                         <div class="c25">
                                             
-                                            <label for="tv">TV <br/> <input type="checkbox" id="tv" name="como_se_entero" value="2"></label>
-                                        </div>
-                                        <div class="c25">
-
-                                            
-                                            <label for="redes_sociales">Redes Sociales <br/><input type="checkbox" id="redes_sociales" name="como_se_entero" value="3"></label>
+                                            <label for="tv">TV <br/> <input type="checkbox" id="tv" name="como_se_entero[]" class="como_se_entero"  value="2"></label>
                                         </div>
                                         <div class="c25">
 
                                             
-                                            <label for="amigo">Amigo <br/><input type="checkbox" id="amigo" name="como_se_entero" value="4"></label>
+                                            <label for="redes_sociales">Redes Sociales <br/><input type="checkbox" id="redes_sociales" name="como_se_entero[]" class="como_se_entero"  value="3"></label>
+                                        </div>
+                                        <div class="c25">
+
+                                            
+                                            <label for="amigo">Amigo <br/><input type="checkbox" id="amigo" name="como_se_entero[]" class="como_se_entero"  value="4"></label>
                                         </div>
                                        
 
@@ -961,29 +961,69 @@ dv(T) {
 
 
 
+
+
+async validarRutDisponible(rut) {
+    // Realizar la consulta AJAX al archivo verifica_rut.php con el parámetro rut
+    const url = `verifica_rut.php?rut=${rut}`;
+
+    return new Promise((resolve, reject) => {
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          // Verificar el estado del JSON y resolver la promesa según corresponda
+          console.log(data);
+          if (data.estado === '1') {
+            resolve(true); // RUT disponible
+            console.log("ejecuta - RUT disponible");
+        } else if (data.estado === '0') {
+            console.log("ejecuta - RUT no disponible");
+            resolve(false); // RUT usado
+          } else {
+            reject('Error en la respuesta del servidor'); // Respuesta inválida
+          }
+        })
+        .catch(error => {
+          reject(error); // Error en la consulta AJAX
+        });
+    });
+  }
+
     // Función para validar el RUT en el elemento con id "rut"
-    validarRutInput() {
-        const rutInput = document.getElementById('rut');
-        const errorRut = document.getElementById('error-rut');
+    async validarRutInput() {
+    const rutInput = document.getElementById('rut');
+    const errorRut = document.getElementById('error-rut');
 
-        if (!rutInput) {
-            console.error('El campo "rut" no está disponible.');
-            return false;
-        }
-
-        let rut = rutInput.value.trim();
-        rut = rut.replace(/\./g, ''); // Eliminar puntos del rut
-
-        // Verificar si el rut es válido utilizando la función validaRut() de la clase Validador
-        if (!this.validaRut(rut)) {
-            errorRut.innerHTML = 'El RUT ingresado no es válido.';
-            return false;
-        }
-
-        // El rut es válido
-        errorRut.innerHTML = '';
-        return true;
+    if (!rutInput) {
+        console.error('El campo "rut" no está disponible.');
+        return false;
     }
+
+    let rut = rutInput.value.trim();
+    rut = rut.replace(/\./g, ''); // Eliminar puntos del rut
+
+    // Verificar si el rut es válido utilizando la función validaRut() de la clase Validador
+    if (!this.validaRut(rut)) {
+        errorRut.innerHTML = 'El RUT ingresado no es válido.';
+        return false;
+    } else {
+        try {
+            const disponible = await this.validarRutDisponible(rut);
+            if (disponible) {
+                console.log('Rut disponible');
+                errorRut.innerHTML = '';
+                return true;
+            } else {
+                errorRut.innerHTML = 'El RUT ingresado ya está en uso.';
+                return false;
+            }
+        } catch (error) {
+            // Manejar el error si ocurriera algún problema con la consulta asincrónica.
+            console.error('Error al validar el RUT:', error);
+            return false;
+        }
+    }
+}
 
 
 
@@ -1086,7 +1126,7 @@ validarCandidato() {
 
 
 validarComoSeEntero() {
-    const comoSeEnteroCheckboxes = document.querySelectorAll('input[name="como_se_entero"]');
+    const comoSeEnteroCheckboxes = document.querySelectorAll('.como_se_entero');
     const errorComoSeEntero = document.getElementById('error-como_se_entero');
     
     if (!comoSeEnteroCheckboxes.length) {
@@ -1137,6 +1177,9 @@ validarComoSeEntero() {
     formVotacion.addEventListener('submit', (event) => {
         event.preventDefault(); // Esto evita que el formulario se envíe automáticamente.
 
+        (async () => {
+
+
         // Aquí puedes realizar las acciones que necesites al enviar el formulario.
         // Por ejemplo, puedes obtener los valores de los campos del formulario y enviarlos a través de una solicitud AJAX.
 
@@ -1156,7 +1199,9 @@ validarComoSeEntero() {
             errores_validacion++;
         }
 
-        if (!this.validarRutInput()) {
+        const resultadoValidacionRut = await this.validarRutInput();
+
+        if (!(resultadoValidacionRut)) {
             errores_validacion++;
         }
 
@@ -1181,15 +1226,12 @@ validarComoSeEntero() {
         }
 
 
-        if(errores_validacion>0){
-            alert('Tiene errores que arreglar en formulario');
-        }else{
-            alert(' formulario se envia');           
+        if(errores_validacion==0){
+            this.enviarFormularioPorAjax(); //Formulario es Valido Asi que se envia por ajax.       
         }
 
+    })();
 
-        // O puedes simplemente enviar el formulario de manera convencional usando:
-        // formVotacion.submit();
     });
 
     console.log('Listener para el evento "onsubmit" del formulario "FormVotacion" configurado.');
@@ -1257,6 +1299,38 @@ validarComoSeEntero() {
 
     console.log('Candidatos cargados.');
   }
+
+
+
+  enviarFormularioPorAjax() {
+  // Obtener el formulario por su ID
+  const form = document.getElementById("FormVotacion");
+
+  // Obtener todos los valores del formulario
+  const formData = new FormData(form);
+
+  // Realizar la petición AJAX por medio de fetch
+  fetch("guarda_votacion.php", {
+    method: "POST",
+    body: formData
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Hubo un problema al enviar el formulario.");
+    }
+    return response.json(); // Si esperas una respuesta en JSON
+    // También puedes usar response.text() si esperas texto
+  })
+  .then(data => {
+    // Aquí puedes manejar la respuesta del servidor, si es necesario
+    console.log(data);
+  })
+  .catch(error => {
+    // Manejar cualquier error ocurrido durante la petición
+    console.error(error);
+  });
+}
+
 
   votar() {
     // Aquí implementa la lógica para realizar la votación con los datos cargados desde this.jsonUbicaciones
