@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3307
--- Tiempo de generación: 25-07-2023 a las 13:58:32
+-- Tiempo de generación: 26-07-2023 a las 01:18:09
 -- Versión del servidor: 10.6.5-MariaDB
 -- Versión de PHP: 7.4.26
 
@@ -58,7 +58,8 @@ CREATE TABLE IF NOT EXISTS `comunas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `comuna` varchar(64) NOT NULL,
   `provincia_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `provincia_id` (`provincia_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=347 DEFAULT CHARSET=utf8mb3;
 
 --
@@ -447,7 +448,8 @@ CREATE TABLE IF NOT EXISTS `provincias` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `provincia` varchar(64) NOT NULL,
   `region_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `region_id` (`region_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb3;
 
 --
@@ -561,14 +563,16 @@ CREATE TABLE IF NOT EXISTS `votaciones` (
   `nombre_completo` varchar(300) CHARACTER SET latin1 NOT NULL,
   `alias` varchar(100) CHARACTER SET latin1 NOT NULL,
   `rut` varchar(12) CHARACTER SET latin1 NOT NULL,
-  `email` int(11) NOT NULL,
+  `email` varchar(300) NOT NULL,
   `comuna_id` int(11) NOT NULL,
   `candidato_id` int(11) NOT NULL,
   `fecha` datetime NOT NULL,
   `ip` varchar(100) CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `rut` (`rut`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+  UNIQUE KEY `rut` (`rut`),
+  KEY `comuna_id` (`comuna_id`),
+  KEY `candidato_id` (`candidato_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
 
@@ -581,8 +585,40 @@ CREATE TABLE IF NOT EXISTS `votaciones_medios` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `votaciones_id` int(11) NOT NULL,
   `medios_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+  PRIMARY KEY (`id`),
+  KEY `votaciones_id` (`votaciones_id`),
+  KEY `medios_id` (`medios_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `comunas`
+--
+ALTER TABLE `comunas`
+  ADD CONSTRAINT `provincia_id_fk` FOREIGN KEY (`provincia_id`) REFERENCES `provincias` (`id`) ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `provincias`
+--
+ALTER TABLE `provincias`
+  ADD CONSTRAINT `region_id_fk` FOREIGN KEY (`region_id`) REFERENCES `regiones` (`id`) ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `votaciones`
+--
+ALTER TABLE `votaciones`
+  ADD CONSTRAINT `candidato_id_fk` FOREIGN KEY (`candidato_id`) REFERENCES `candidatos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `comuna_id_fk` FOREIGN KEY (`comuna_id`) REFERENCES `comunas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `votaciones_medios`
+--
+ALTER TABLE `votaciones_medios`
+  ADD CONSTRAINT `medios_id_fk` FOREIGN KEY (`medios_id`) REFERENCES `medios` (`id`) ON UPDATE NO ACTION,
+  ADD CONSTRAINT `votaciones_id_fk` FOREIGN KEY (`votaciones_id`) REFERENCES `votaciones` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

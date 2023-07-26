@@ -4,6 +4,9 @@ class GestorBD {
     private $conexion;
 
     public function __construct($configuracion) {
+
+        try {
+
         $this->conexion = mysqli_connect(
             $configuracion->getHost(),
             $configuracion->getUser(),
@@ -11,9 +14,13 @@ class GestorBD {
             $configuracion->getDatabase()
         );
 
-        if (!$this->conexion) {
-            die('Error de conexión: ' . mysqli_connect_error());
+     
+
+        } catch (Exception $e) {
+            // Se ha producido un error en la conexión, muestra un mensaje personalizado
+            die("Lo sentimos, ha ocurrido un error al conectar con la base de datos. Por favor, inténtalo más tarde.");
         }
+        
     }
 
     public function obtenerDatosUbicacion() {
