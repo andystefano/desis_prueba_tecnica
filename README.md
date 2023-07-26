@@ -5,7 +5,7 @@ Desis prueba técnica PHP, javascript, CSS, MySql  25072023
 
 ![Logo o imagen representativa del proyecto](https://andy.cl/images/SoyAndy.png){:width="200px"}
 
-## Nombre del Proyecto
+## desis_prueba_tecnica Andy Hormazabal
 
 Este proeycto incluye PHP, MYSQL, Javascript para prueba tecnica, no usa framework ni tampoco librerias de css o javascript.
 
